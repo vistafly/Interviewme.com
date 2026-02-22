@@ -1,0 +1,10 @@
+.history-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.history-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.history-panel::-webkit-scrollbar-thumb {
+  background: var(--elevated);
+  border-radius: 4px;
+}

@@ -1,0 +1,56 @@
+/* ============================================
+   ROTATING TEXT ANIMATION
+   Purple→Cyan gradient + emissive glow reveal
+   ============================================ */
+
+.rotating-text-wrapper {
+  position: relative;
+  display: inline-block;
+  min-height: 1.3em;
+  vertical-align: baseline;
+}
+
+.rotating-text {
+  display: inline-block;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+}
+
+.rotating-text:not(.active) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* Characters: gradient-clipped, default hidden, fast 0.6s fade-out */
+.rotating-text .char,
+.rotating-text .char-space {
+  display: inline-block;
+  opacity: 0;
+  transform: none !important;
+  color: #d4b8ff;
+  background: linear-gradient(135deg, #c89aff 0%, #7ddfff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.rotating-text .char-space {
+  width: 0.25em;
+}
+
+/* Active: slow 1.8s staggered fade-in + 2-layer emissive glow */
+.rotating-text.active .char,
+.rotating-text.active .char-space {
+  transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1),
+              filter 2.2s cubic-bezier(0.23, 1, 0.32, 1);
+  opacity: 1;
+  transform: none !important;
+  filter:
+    brightness(1.15)
+    drop-shadow(0 0 8px rgba(200, 154, 255, 0.55))
+    drop-shadow(0 0 30px rgba(125, 223, 255, 0.25));
+}

@@ -1,0 +1,87 @@
+/* ============================================
+   LOADING DOTS — smooth rising/falling
+   White dots with pulsating glow
+   ============================================ */
+
+.loading-dots {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 24px;
+}
+
+.loading-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 0 6px rgba(255, 255, 255, 0.5),
+    0 0 18px rgba(255, 255, 255, 0.15);
+  animation:
+    dotFloat 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite,
+    dotGlow  3.6s ease-in-out infinite;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: 0.2s, 1.2s;
+}
+
+.loading-dot:nth-child(3) {
+  animation-delay: 0.4s, 2.4s;
+}
+
+@keyframes dotFloat {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+@keyframes dotGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 6px rgba(255, 255, 255, 0.5),
+      0 0 18px rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(200, 154, 255, 0.7),
+      0 0 28px rgba(125, 223, 255, 0.3),
+      0 0 48px rgba(200, 154, 255, 0.1);
+  }
+}
+
+/* Success state */
+.loading-dots--success .loading-dot {
+  animation: dotSuccess 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  background: #3ee8b5;
+  box-shadow:
+    0 0 10px rgba(62, 232, 181, 0.7),
+    0 0 30px rgba(62, 232, 181, 0.3);
+}
+
+.loading-dots--success .loading-dot:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.loading-dots--success .loading-dot:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+@keyframes dotSuccess {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.4);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
