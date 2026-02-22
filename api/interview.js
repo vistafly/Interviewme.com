@@ -58,7 +58,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const MOCK_MODE = process.env.MOCK_MODE === 'true';
+  // Default to mock mode when MOCK_MODE isn't explicitly set to 'false'
+  const MOCK_MODE = process.env.MOCK_MODE !== 'false';
 
   if (MOCK_MODE) {
     await new Promise((r) => setTimeout(r, 1200));
