@@ -367,7 +367,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.renderer = new THREE.WebGLRenderer({
           antialias: false,
           alpha: true,
-          powerPreference: isMobile ? 'low-power' : 'high-performance'
+          powerPreference: 'high-performance'
         });
         this.renderer.setSize(initW, initH, false);
         this.renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio);
@@ -1136,7 +1136,12 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
       const myApp = new App(container, options);
       appRef.current = myApp;
-      myApp.loadAssets().then(myApp.init);
+      if (isMobile) {
+        // Skip SMAA asset loading on mobile — init immediately
+        myApp.init();
+      } else {
+        myApp.loadAssets().then(myApp.init);
+      }
     })();
 
     return () => {
