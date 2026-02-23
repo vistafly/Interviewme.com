@@ -9,7 +9,7 @@ const SNAPPY = [0.16, 1, 0.3, 1];
 const inputStyle = {
   width: '100%',
   padding: '10px 14px',
-  fontSize: 13,
+  fontSize: 16,
   fontFamily: tokens.font.body,
   color: 'rgba(255,255,255,0.85)',
   background: 'rgba(255,255,255,0.04)',
@@ -137,6 +137,7 @@ export default function AuthCard({ open, onClose }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.3, ease: SNAPPY }}
+          onTouchStart={(e) => e.stopPropagation()}
           style={{
             position: 'fixed',
             bottom: 64,

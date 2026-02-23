@@ -36,6 +36,12 @@ const WELCOME_NAMES = [
   'Emilio', 'Seren', 'Bodhi', 'Rio', 'Kenji', 'Sage', 'Cyrus', 'Maren',
 ];
 
+const getUserFirstName = (user) => {
+  if (user?.displayName) return user.displayName.split(' ')[0];
+  if (user?.email) return user.email.split('@')[0];
+  return null;
+};
+
 export default function LandingPage({ onStart, onAnalytics }) {
   const { user, loading } = useAuth();
   const [history, setHistory] = useState(() => loadHistory());
@@ -69,13 +75,24 @@ export default function LandingPage({ onStart, onAnalytics }) {
     setTransitionState({ name: 'ctaHover', active: false, filter: BASE_FILTER, transform: 'scale(1)' });
   }, []);
 
+  const handleTouchStart = useCallback(() => {
+    handleCtaEnter();
+  }, [handleCtaEnter]);
+
   return (
     <div
       className="page-enter"
-      onTouchStart={handleCtaEnter}
+      onTouchStart={handleTouchStart}
       onTouchEnd={handleCtaLeave}
       onTouchCancel={handleCtaLeave}
-      style={{ position: 'relative', height: '100dvh', overflow: 'hidden' }}
+      style={{
+        position: 'relative',
+        height: '100dvh',
+        overflow: 'hidden',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+        WebkitTouchCallout: 'none',
+      }}
     >
       {/* Orb — full viewport, interactive */}
       <div
@@ -239,9 +256,7 @@ export default function LandingPage({ onStart, onAnalytics }) {
             }}
           >
             Welcome,{' '}
-            {user?.displayName ? (
-              user.displayName.split(' ')[0]
-            ) : (
+            {getUserFirstName(user) || (
               <ScrambleText
                 words={WELCOME_NAMES}
                 interval={3000}
@@ -280,9 +295,7 @@ export default function LandingPage({ onStart, onAnalytics }) {
             }}
           >
             Welcome,{' '}
-            {user?.displayName ? (
-              user.displayName.split(' ')[0]
-            ) : (
+            {getUserFirstName(user) || (
               <ScrambleText
                 words={WELCOME_NAMES}
                 interval={3000}
