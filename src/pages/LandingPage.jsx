@@ -3,7 +3,7 @@ import { tokens } from '../styles/tokens';
 import { loadHistory, loadHistoryForUser } from '../lib/storage';
 import { setTransitionState } from '../lib/perfProfiler';
 import { useAuth } from '../contexts/AuthContext';
-import NavBar from '../components/NavBar';
+import { User } from 'lucide-react';
 import Button from '../components/Button';
 import Orb from '../components/Orb';
 import RotatingText from '../components/RotatingText';
@@ -129,74 +129,102 @@ export default function LandingPage({ onStart, onAnalytics }) {
         </div>
       </div>
 
-      <NavBar
-        left={
-          <span
+      {/* Sign in / User menu — bottom-right corner */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 2,
+          animation: 'fadeIn 1s ease 0.4s both',
+        }}
+      >
+        {user ? (
+          <UserMenu />
+        ) : (
+          <button
+            onClick={() => setAuthOpen(true)}
             style={{
-              fontFamily: tokens.font.body,
-              fontWeight: 600,
-              fontSize: 14,
-              color: tokens.color.text,
-              letterSpacing: 0.5,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 36,
+              height: 36,
+              color: tokens.color.textSecondary,
+              background: 'none',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: tokens.radius.full,
+              cursor: 'pointer',
+              transition: 'color 0.2s, border-color 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = tokens.color.text;
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = tokens.color.textSecondary;
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
             }}
           >
-            ◉ InterviewMe
-          </span>
-        }
-        right={
-          user ? (
-            <UserMenu />
-          ) : (
-            <button
-              onClick={() => setAuthOpen(true)}
-              style={{
-                fontFamily: tokens.font.body,
-                fontSize: 12,
-                fontWeight: 500,
-                color: tokens.color.textSecondary,
-                background: 'none',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: tokens.radius.full,
-                padding: '6px 16px',
-                cursor: 'pointer',
-                letterSpacing: 0.3,
-                transition: 'color 0.2s, border-color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = tokens.color.text;
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = tokens.color.textSecondary;
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-              }}
-            >
-              Sign in
-            </button>
-          )
-        }
-      />
+            <User size={16} strokeWidth={1.5} />
+          </button>
+        )}
+      </div>
 
-      {/* Welcome text — centered on orb */}
+      {/* Brand + welcome — centered inside orb */}
       {!loading && (
         <div
           style={{
             position: 'fixed',
-            top: '40%',
+            top: '38%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             zIndex: 1,
             pointerEvents: 'none',
-            textAlign: 'center',
             animation: 'fadeIn 2s ease both',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'clamp(14px, 2vw, 24px)',
           }}
         >
+          <img
+            src="/logo.png"
+            alt="InterviewMe"
+            style={{
+              height: 'clamp(44px, 6vw, 64px)',
+              width: 'auto',
+              objectFit: 'contain',
+              filter: ctaHover
+                ? `${HOVER_FILTER} drop-shadow(0 0 20px rgba(156,67,254,0.5)) drop-shadow(0 0 40px rgba(76,194,233,0.3))`
+                : 'drop-shadow(0 0 16px rgba(156,67,254,0.45)) drop-shadow(0 0 32px rgba(76,194,233,0.2))',
+              transform: ctaHover ? 'scale(1.03)' : 'scale(1)',
+              transformOrigin: 'center center',
+              transition: ctaHover
+                ? 'filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+                : 'filter 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
+          <span
+            style={{
+              fontFamily: tokens.font.body,
+              fontSize: 'clamp(24px, 3.5vw, 40px)',
+              fontWeight: 300,
+              color: 'rgba(255,255,255,0.9)',
+              letterSpacing: 2,
+              textShadow:
+                '0 0 30px rgba(200, 154, 255, 0.2), 0 0 60px rgba(125, 223, 255, 0.1)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Interview<span style={{ fontWeight: 500 }}>Me</span>
+          </span>
           <p
             style={{
               fontFamily: tokens.font.body,
-              fontSize: 'clamp(14px, 1.8vw, 20px)',
+              fontSize: 'clamp(11px, 1.2vw, 14px)',
               fontWeight: 300,
-              color: 'rgba(255,255,255,0.45)',
+              color: 'rgba(255,255,255,0.3)',
               letterSpacing: 3,
               textTransform: 'uppercase',
               margin: 0,

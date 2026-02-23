@@ -147,16 +147,17 @@ export function createSpeechRecognition(lang, callbacks) {
   };
 }
 
-// --- Mic Permission Check ---
+// --- Mic Permission Check (non-prompting) ---
 export async function checkMicPermission() {
   if (!navigator.mediaDevices?.getUserMedia) {
     return 'unavailable';
   }
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    stream.getTracks().forEach((t) => t.stop());
-    return 'granted';
+    // Use the Permissions API to check state without triggering a browser prompt.
+    const result = await navigator.permissions.query({ name: 'microphone' });
+    return result.state; // 'granted' | 'denied' | 'prompt'
   } catch {
-    return 'denied';
+    // Permissions API not supported — return unknown rather than prompting
+    return 'unknown';
   }
 }

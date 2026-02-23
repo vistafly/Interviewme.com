@@ -25,10 +25,10 @@ export function useAudioAmplitude() {
     rafRef.current = requestAnimationFrame(pump);
   }, []);
 
-  const startAnalyser = useCallback(async () => {
+  const startAnalyser = useCallback(async (existingStream) => {
     if (analyserRef.current) return;
 
-    const analyser = await createMicAnalyser();
+    const analyser = await createMicAnalyser(existingStream);
     analyserRef.current = analyser;
 
     // Start pump if not already running

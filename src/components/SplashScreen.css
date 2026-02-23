@@ -1,0 +1,101 @@
+/* ============================================
+   SPLASH SCREEN — Immersive loading experience
+   ============================================ */
+
+/* --- Orb Entrance --- */
+.splash-orb {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.splash-screen--enter .splash-orb,
+.splash-screen--idle .splash-orb {
+  opacity: 1;
+}
+
+/* --- Brand Entrance (staggered) --- */
+.splash-logo {
+  opacity: 0;
+  animation: splashBrandIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+.splash-title {
+  opacity: 0;
+  animation: splashBrandIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+}
+
+@keyframes splashBrandIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Progress Line --- */
+.splash-progress {
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.8s both;
+}
+
+.splash-progress-fill {
+  animation: splashProgressFill 2.5s cubic-bezier(0.65, 0, 0.35, 1) 0.8s both;
+}
+
+@keyframes splashProgressFill {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.5;
+  }
+  70% {
+    transform: scaleX(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.6;
+  }
+}
+
+/* --- Idle: Breathing glow on progress line --- */
+.splash-screen--idle .splash-progress-fill {
+  animation: splashProgressGlow 3s ease-in-out infinite;
+}
+
+@keyframes splashProgressGlow {
+  0%, 100% {
+    opacity: 0.3;
+    box-shadow: 0 0 4px rgba(156, 67, 254, 0.2);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 10px rgba(76, 194, 233, 0.3);
+  }
+}
+
+/* --- EXIT ANIMATION ---
+   Clean opacity crossfade only — the landing page underneath is
+   pixel-identical, so any scale/translate would break the match. */
+.splash-screen--exit {
+  animation: splashFadeOut 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes splashFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* --- Mobile: simplify glow animations for battery --- */
+@media (hover: none) and (pointer: coarse) {
+  .splash-progress-fill {
+    box-shadow: none !important;
+  }
+
+  .splash-screen--idle .splash-progress-fill {
+    animation: none;
+    opacity: 0.5;
+  }
+}

@@ -1,10 +1,14 @@
 /**
  * Microphone audio analyser utility.
- * Creates a getUserMedia stream piped through an AnalyserNode
+ * Pipes an audio stream through an AnalyserNode
  * to provide real-time RMS amplitude (0-1).
+ *
+ * @param {MediaStream} [existingStream] - Reuse a cached getUserMedia stream
+ *   to avoid triggering a duplicate browser permission prompt.
  */
-export async function createMicAnalyser() {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+export async function createMicAnalyser(existingStream) {
+  const stream = existingStream || await navigator.mediaDevices.getUserMedia({ audio: true });
+  const ownsStream = !existingStream; // only stop tracks if we created them
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   // Chrome suspends AudioContext until a user gesture — resume it explicitly
@@ -46,7 +50,11 @@ export async function createMicAnalyser() {
   function destroy() {
     source.disconnect();
     analyser.disconnect();
-    stream.getTracks().forEach((t) => t.stop());
+    // Only stop tracks if we created the stream ourselves;
+    // a shared/cached stream is managed by micStream.js.
+    if (ownsStream) {
+      stream.getTracks().forEach((t) => t.stop());
+    }
     if (audioCtx.state !== 'closed') {
       audioCtx.close();
     }

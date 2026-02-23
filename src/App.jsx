@@ -1,19 +1,23 @@
 import { useState, lazy, Suspense } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import LandingPage from './pages/LandingPage';
+import SplashScreen from './components/SplashScreen';
 
 const SetupPage = lazy(() => import('./pages/SetupPage'));
 const InterviewPage = lazy(() => import('./pages/InterviewPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 
-export default function App() {
+function AppContent() {
   const [page, setPage] = useState('landing');
   const [questions, setQuestions] = useState([]);
   const [companyName, setCompanyName] = useState('');
   const [jobTitle, setJobTitle] = useState('');
+  const [splashDone, setSplashDone] = useState(false);
 
   return (
-    <AuthProvider>
+    <>
+      {!splashDone && <SplashScreen onComplete={() => setSplashDone(true)} />}
+
       {page === 'landing' && (
         <LandingPage onStart={() => setPage('setup')} onAnalytics={() => setPage('analytics')} />
       )}
@@ -45,6 +49,14 @@ export default function App() {
           <AnalyticsPage onBack={() => setPage('landing')} />
         </Suspense>
       )}
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
     </AuthProvider>
   );
 }

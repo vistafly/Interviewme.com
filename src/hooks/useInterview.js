@@ -3,6 +3,7 @@ import { speakText, createSpeechRecognition } from '../lib/speech';
 import { gradeAnswer } from '../lib/grading';
 import { useAudioAmplitude } from './useAudioAmplitude';
 import { setInterviewState } from '../lib/perfProfiler';
+import { requestMicStream, getCachedMicStream, releaseMicStream } from '../lib/micStream';
 
 export function useInterview(questions, lang = 'en-US') {
   const [phase, setPhase] = useState('pre'); // pre | speaking | listening | feedback | review
@@ -15,6 +16,22 @@ export function useInterview(questions, lang = 'en-US') {
   const [textInput, setTextInput] = useState('');
   const [orbState, setOrbState] = useState('idle');
   const [errorMsg, setErrorMsg] = useState(null);
+  const [micReady, setMicReady] = useState(false);
+
+  // Request mic permission once upfront when the interview loads.
+  // This triggers the browser prompt early (before any question starts)
+  // so it doesn't interrupt the interview flow.
+  useEffect(() => {
+    if (textMode) return;
+
+    requestMicStream()
+      .then(() => setMicReady(true))
+      .catch(() => {
+        // Mic denied — fall back to text mode gracefully
+        setTextMode(true);
+        setErrorMsg('Microphone access denied. Using text mode.');
+      });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const timerRef = useRef(null);
   const recRef = useRef(null);
@@ -103,10 +120,11 @@ export function useInterview(questions, lang = 'en-US') {
       });
     }, 1000);
 
-    // Start real mic audio analysis
+    // Start real mic audio analysis using the pre-acquired stream
     if (!textMode) {
       try {
-        await startAnalyser();
+        const stream = getCachedMicStream();
+        await startAnalyser(stream);
       } catch {
         // Mic permission denied — amplitudeRef stays 0, orb stays calm
       }
@@ -251,6 +269,7 @@ export function useInterview(questions, lang = 'en-US') {
       clearAllTimers();
       stopRecording();
       stopAnalyser();
+      releaseMicStream();
       window.speechSynthesis?.cancel();
       setInterviewState(null);
     };
@@ -280,5 +299,6 @@ export function useInterview(questions, lang = 'en-US') {
     currentQuestion,
     wordCount,
     setTextMode,
+    micReady,
   };
 }

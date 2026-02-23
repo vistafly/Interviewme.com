@@ -118,14 +118,28 @@ export default function AuthCard({ open, onClose }) {
   return (
     <AnimatePresence>
       {open && (
+        <>
+        {/* Invisible backdrop — click outside to close */}
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={handleClose}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 299,
+          }}
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
+          exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.3, ease: SNAPPY }}
           style={{
             position: 'fixed',
-            top: 64,
+            bottom: 64,
             right: 24,
             zIndex: 300,
             width: 300,
@@ -365,6 +379,7 @@ export default function AuthCard({ open, onClose }) {
             </form>
           )}
         </motion.div>
+        </>
       )}
     </AnimatePresence>
   );
